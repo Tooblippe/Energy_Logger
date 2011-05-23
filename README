@@ -21,5 +21,5 @@ Current probe - http://www.seeedstudio.com/depot/noninvasive-ac-current-sensor-1
 Current probe - bias resistors 2x10kOhm and 10uF Capacitor. Burden Resistor - 56 OHMS (used 6 330 OHM in parralel )
 Current probe - more info at - http://openenergymonitor.org/emon/node/28
 ------------------------------------------------------------------------------------------------------------------------------
-RF 12 radio connected via SPI - all my notes here - http://forum.jeelabs.net/comment/728#comment-728
+RF 12 radio connected via SPI - all my notes here - https://github.com/Tooblippe/Energy_Logger/wiki
 --------------
