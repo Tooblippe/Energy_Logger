@@ -20,6 +20,6 @@ Current probe - 100A, SCT-013-00, order from NETRAM - http://www.netram.co.za/Se
 Current probe - http://www.seeedstudio.com/depot/noninvasive-ac-current-sensor-100a-max-p-547.html
 Current probe - bias resistors 2x10kOhm and 10uF Capacitor. Burden Resistor - 56 OHMS (used 6 330 OHM in parralel )
 Current probe - more info at - http://openenergymonitor.org/emon/node/28
-------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------
 RF 12 radio connected via SPI - all my notes here - https://github.com/Tooblippe/Energy_Logger/wiki
 --------------
