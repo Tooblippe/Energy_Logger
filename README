@@ -1,8 +1,26 @@
-Arduino based home energy logger
-
-based on 
-
-using RF12 radios...
-
-expand
-
+Arduino data logger by Tobie Nortje - tobie.nortje@navitas.co.za
+find project info at - www.navitas.co.za/tooblogger
+-----------------------------------------------------------------
+Project components
+1 or 2 arduinos with or without an RF 12 radio
+1 x 100 AMP CT
+1st arduino with CT logs energy and send via RF12 radio and serial
+2nd arduino receives RF12 signal and send value via serial port
+This software can read eiter, or both if ran on seperate computers or ports
+-----------------------------------------------------------------
+Function
+Listens to serial port at port number = port at baud = baud
+Arduino only sents one value every couple of seconds.
+This code should be able to read the sensor board and the client board.
+Do with the code what you want. \n
+-----------------------------------------------------------------
+File format : logs to csv in DATE, TIME, POWER
+-----------------------------------------------------------------
+Arduino UNO - connected current probe and RF12 Radio
+Current probe - 100A, SCT-013-00, order from NETRAM - http://www.netram.co.za/Sensors/Non-invasive-AC-current-sensor-100A.html
+Current probe - http://www.seeedstudio.com/depot/noninvasive-ac-current-sensor-100a-max-p-547.html
+Current probe - bias resistors 2x10kOhm and 10uF Capacitor. Burden Resistor - 56 OHMS (used 6 330 OHM in parralel )
+Current probe - more info at - http://openenergymonitor.org/emon/node/28
+------------------------------------------------------------------------------------------------------------------------------
+RF 12 radio connected via SPI - all my notes here - http://forum.jeelabs.net/comment/728#comment-728
+--------------
