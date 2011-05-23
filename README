@@ -2,6 +2,7 @@ Arduino data logger by Tobie Nortje - tobie.nortje@navitas.co.za
 -----------------------------------------------------------------
 Project components
 1 or 2 arduinos with or without an RF 12 radio
+1 x OpenLog unit connected to UART of sensor - for logging data - https://github.com/nseidle/OpenLog/wiki
 1 x 100 AMP CT
 1st arduino with CT logs energy and send via RF12 radio and serial
 2nd arduino receives RF12 signal and send value via serial port
