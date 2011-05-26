@@ -152,10 +152,6 @@ void checkSerialCommand(){
       
  } 
    
-    
-  
-
-
 void checkRadioCommand(){
 //handle a receive event
      //something available?
@@ -261,7 +257,6 @@ void loop()
    if (strcmp(serInString, "--")  == 0 )
     {
       updatetime = updatetime - 1000;
-      serInString[1] = '\0';
       myrf12send("Loggin decremented");
       serInIndx = 0; 
       serInString[0] = '\0';
@@ -271,7 +266,6 @@ void loop()
     {
       
       updatetime = updatetime + 1000;
-      serInString[1] = '\0';
       myrf12send("Loggin incremented");
       serInIndx = 0; 
       serInString[0] = '\0';
@@ -281,7 +275,6 @@ void loop()
     if (strcmp(serInString, "logging")  == 0 )
     {
       logging = !logging;
-      serInString[1] = '\0';
       myrf12send("remote logging toggled ");
       serInIndx = 0; 
       serInString[0] = '\0';
@@ -290,12 +283,10 @@ void loop()
     
     if (serInString[0] == TIME_HEADER)    //did we get a T for the time message
     {
-      
-      //reset the command string
-      serInString[0] = '\0';
       // create a time variable                     
       time_t pctime = 0;
-      for(int i=0; i < TIME_MSG_LEN -1; i++){   
+      
+      for(int i=1; i < TIME_MSG_LEN; i++){   
        // convert the sting into a number
         c = serInString[i];         
         if( c >= '0' && c <= '9'){   
@@ -306,13 +297,11 @@ void loop()
       myrf12send("TIME SET");
       serInIndx = 0; 
       serInString[0] = '\0';
-  
     }
     
     if (strcmp(serInString, "clock")  == 0 )
     {
       //change this to a functiom amd write to opemlog
-      serInString[1] = '\0';
       Serial.print(hour());
       printDigits(minute());
       printDigits(second());
@@ -327,14 +316,10 @@ void loop()
       Serial.println(); 
       serInString[0] = '\0';
       serInIndx = 0; 
-
-  
     }
      
    if (strcmp(serInString, "zzz")  == 0 )
     {
-      Serial.print( 26, BYTE );
-      Serial.print( 26, BYTE );
       Serial.print( 26, BYTE );
       logging = 0;
       debug = 0;
@@ -345,11 +330,7 @@ void loop()
       serInIndx = 0;   
       serInString[0] = '\0' ;
       Serial.print( 13, BYTE );
-      Serial.print( 13, BYTE );
-      Serial.print( 13, BYTE );
-      
-      
-    }
+     }
     
      if (strcmp(serInString, "disk")  == 0 )
     {
@@ -357,10 +338,9 @@ void loop()
        int wait = 200;
        delay(wait);
        Serial.flush();
-       
-      Serial.println( "disk");
-      serInIndx = 0;   
-      serInString[0] = '\0';
+       Serial.println( "disk");
+       serInIndx = 0;   
+       serInString[0] = '\0';
      
     }  
 
@@ -378,16 +358,11 @@ void loop()
   if (strcmp(serInString, "???") == 0)
     {
       Serial.print( 13, BYTE );
-      Serial.print( 13, BYTE );
-      Serial.print( 13, BYTE );
-      Serial.print( 13, BYTE );
+      
        int wait = 200;
        delay(wait);
        Serial.flush();
        delay(wait);
-       Serial.flush();
-       delay(wait);
-       Serial.flush();
        Serial.println( "?");
        delay(20);
        serInIndx = 0;   
