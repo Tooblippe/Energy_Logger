@@ -1,5 +1,3 @@
-
-
 hallo =  """
 Arduino data logger by Tobie Nortje - tobie.nortje@navitas.co.za
 find project info at - www.navitas.co.za/tooblogger
@@ -36,8 +34,8 @@ import time
 import eeml
 
 #pachube keys
-API_KEY = 'cQJdEUnKaHA00J1N-PKDtpARMrnv5ShkB3Es9Tz-y74'
-API_URL = '/api/24461.xml'
+API_KEY = 'xxxxxx'
+API_URL = '/api/xxxxx.xml'
 port = 4
 baud = 9600
 pachube_update = 6   #roughtly update pachube every 60s
