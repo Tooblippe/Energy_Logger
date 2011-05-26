@@ -20,6 +20,7 @@
   Modified 28 September 2010 by Mark Sproul
   
   MODIFIED 26 May 2011 - Tobie Nortje  https://github.com/Tooblippe/Energy_Logger
+	http://navitas.co.za/tobienortje/
   The current Arduino RX buffer is set to 128 bytes.
   Increased the buffer size to 256, by changing line 47 below
 */
