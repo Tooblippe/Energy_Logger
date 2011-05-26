@@ -99,7 +99,7 @@ void loop () {
             lcd.print(rf12_data[i]);
         }
      //finish off with an EOL
-     Serial.println();    
+     //Serial.println();    
      }
      
         
