@@ -48,11 +48,11 @@ uint8_t myid = 2;            // radio id - must be unique
 uint8_t freq = RF12_868MHZ;  // radio frequency - must be same for all radios
 uint8_t group = 30;          // radoi group - must be same for radios
     
-char serInString[500];  // array that will hold the different bytes  100=100characters;
+char serInString[100];  // array that will hold the different bytes  100=100characters;
                       // -> you must state how long the array will be else it won't work.
 int  serInIndx  = 0;    // index of serInString[] in which to insert the next incoming byte
 
-byte debug = 1;        //print strings if 1
+byte debug = 0;        //print strings if 1
 byte logging = 1;      //are we logging now 1=yes, 0=no
 byte openlogcommandmode = 0;
 
@@ -89,7 +89,7 @@ void setup()
   emon.setPins(5,5);                                 //Energy monitor analog pins, fake the voltage pin to same as current. We are not reading the voltage.
   emon.calibration( 1, 0.171, 1);                    //Energy monitor calibration 0.171
   
-  Serial.begin(9600);
+  Serial.begin(4800);                      //we need to chat as slow as possible to OPENLOG and as fast as possible witht RF12 radio to get the data ou and avoid serial data loss
   Serial.flush();
   dbp("Current probe v2  ");
   rf12_initialize( myid, freq, group );    //set values manualy, sender need to be same freq and group.
@@ -107,7 +107,7 @@ if (rf12_canSend()) {
           // send out the packet
           rf12_sendStart(0, payload.buffer(), payload.length());
           payload.reset();
-          delay(5);
+          delay(50);
     }
 dbp("sent ");
 dbp(This);
@@ -127,10 +127,10 @@ void checkSerialCommand(){
   serInIndx = 0; 
   
   while (Serial.available()){
-    delay(1);
-     serInString[serInIndx] = Serial.read();
+    //delay(1);
+     serInString[serInIndx++] = Serial.read();
      //increment string pointer
-     serInIndx++;
+     //serInIndx++;
      //mark the end of string in case it is done
       serInString[serInIndx] = '\0';
         
@@ -139,7 +139,7 @@ void checkSerialCommand(){
       //myrf12send("more than 60");
       myrf12send(serInString);
       serInIndx = 0; 
-      delay(100);
+      //delay(100);
      } 
     }
     
@@ -200,7 +200,7 @@ void sendLoggingString(){
             String MonthS = monthShortStr(month());
             String YearS = year();
             String DateS = DayS +"," + "" +DayN + " " + MonthS + " " + YearS;
-            String FullDate = DateS + ',' + TimeS + ",";
+            String FullDate = DateS + ',' + TimeS + "," ;
             
           if (logging) {
             Serial.print(FullDate);
@@ -216,6 +216,12 @@ void sendLoggingString(){
           payload.reset();
           delay(200);
           payload.print(emon.apparentPower);
+          // send out the packet
+          rf12_sendStart(0, payload.buffer(), payload.length());
+          payload.reset();
+          delay(200);
+          byte newline = '\n';
+          payload.print(newline);
           // send out the packet
           rf12_sendStart(0, payload.buffer(), payload.length());
           payload.reset();
@@ -281,7 +287,7 @@ void loop()
   
     }
     
-    if (serInString[0] == TIME_HEADER)    //did we get a T for the time message
+    if ((serInString[0] == TIME_HEADER)  && logging )    //did we get a T for the time message
     {
       // create a time variable                     
       time_t pctime = 0;
@@ -321,6 +327,9 @@ void loop()
    if (strcmp(serInString, "zzz")  == 0 )
     {
       Serial.print( 26, BYTE );
+       Serial.print( 26, BYTE );
+        Serial.print( 26, BYTE );
+      
       logging = 0;
       debug = 0;
       int wait = 200;
@@ -329,6 +338,8 @@ void loop()
       myrf12send("openlog opened");  
       serInIndx = 0;   
       serInString[0] = '\0' ;
+      Serial.print( 13, BYTE );
+      Serial.print( 13, BYTE );
       Serial.print( 13, BYTE );
      }
     
@@ -369,13 +380,13 @@ void loop()
        serInString[0] = '\0';
       
     } 
-    if (strcmp(serInString, "ls") == 0)
+    if (strcmp(serInString, "data") == 0)
     {
-      Serial.print( 13, BYTE );
+       Serial.print( 13, BYTE );
        int wait = 200;
        delay(wait);
        Serial.flush();
-       Serial.println( "ls");
+       Serial.println( "read SEQLOG00.TXT");
        serInIndx = 0;   
        serInString[0] = '\0';
       
@@ -385,7 +396,10 @@ void loop()
     {
       Serial.flush();
     } 
-      
+     
+     
+    
+    } 
     
     
    
