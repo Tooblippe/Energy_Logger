@@ -392,16 +392,26 @@ void loop()
       
     } 
     
+    
+    if (strcmp(serInString, "reset") == 0)
+    {
+       Serial.print( 13, BYTE );
+       int wait = 200;
+       delay(wait);
+       Serial.flush();
+       Serial.println( "reset");
+       serInIndx = 0;   
+       serInString[0] = '\0';
+       logging = 1;            //we can now log again
+      
+    } 
+    
     if (strcmp(serInString, "flush") == 0)
     {
       Serial.flush();
     } 
      
      
-    
-    } 
-    
-    
    
     
     
