@@ -53,11 +53,15 @@ uint8_t myid = 1;
 uint8_t freq = RF12_868MHZ;
 uint8_t group = 30;
 
-byte ledPin = 13;
+byte ledPin = 9;
 byte inByte = 0;
 char serInString[30];  // array that will hold the different bytes  100=100characters;
+char radioInString[50];  // array that will hold the different bytes  100=100characters;
                       // -> you must state how long the array will be else it won't work.
 int  serInIndx  = 0;    // index of serInString[] in which to insert the next incoming byte
+int  radioIndx = 0;
+int  loadlimit = 2800;  //lets check for geyser
+
 
 void blink(byte n ){
  pinMode( ledPin, OUTPUT );
@@ -79,6 +83,9 @@ void setup () {
     
     // start the LCD in 2 rows by 16 characters mode
     lcd.begin(16, 2);
+     lcd.setCursor(0, 0);
+    lcd.print("waiting...");
+    pinMode( ledPin, OUTPUT );
    
 }
 
@@ -93,14 +100,41 @@ void loop () {
      //something available?
      if (rf12_recvDone() && rf12_crc == 0) {      // a packet has been received
         //print the buffer to the serial port
-        //if OPenlog is connected it will catch it
+        //if OPenlog is connected it will catch it    
+        radioIndx = 0;      
         for (byte i = 0; i < rf12_len; ++i){
-            Serial.print(rf12_data[i]);
-            lcd.print(rf12_data[i]);
+          // lets create a string beacuse we do not understand c++ data types 
+          radioInString[ radioIndx++ ] = rf12_data[i];
+        } 
+       
+        // add EOL
+        radioInString[ radioIndx ] = '\0';
+        // send it to the terminal
+        Serial.print( radioInString );
+        
+        String instring = String(radioInString);
+        // lets look for the reading value...there is a "." in the string somewhere
+        if (instring.indexOf(".")>0){
+         // found it so print it to the lcd
+         lcd.setCursor(0, 0);
+         lcd.print(instring);
+         
+         //now convert the string to a long
+         char carray[instring.length() + 1]; //determine size of the array
+         instring.toCharArray(carray, sizeof(carray)); //put readStringinto an array
+         float invalue = atof( carray );
+         
+         //lets print something to the lcd if a threshold have been met.
+         if (invalue > loadlimit ){
+           lcd.print(" ON  ");
+           digitalWrite( ledPin, HIGH );
+         } else {
+             lcd.print( " OFF   ");
+             digitalWrite( ledPin, LOW );
+         }
+        
         }
-     //finish off with an EOL
-     //Serial.println();    
-     }
+      }
      
         
      

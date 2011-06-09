@@ -210,6 +210,9 @@ void sendLoggingString(){
             Serial.println(emon.apparentPower); 
           
           // fill the packet buffer with text to send via rf12 also  
+          
+          // nB this needs to be optimsed to one send...maybe send the T string? you can decode on other side.
+          
           payload.print(FullDate);
           // send out the packet
           rf12_sendStart(0, payload.buffer(), payload.length());

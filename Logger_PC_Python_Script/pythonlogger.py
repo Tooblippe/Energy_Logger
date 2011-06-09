@@ -25,18 +25,20 @@ fmt1 = '%m/%d/%Y'
 fmt2 = '%H:%M:%S'
 
 #log to filename
-filename = "C:\\temp\\latest.csv"
+filename = "C:\\temp\\geyser.csv"
 
 #setup serial comms
 ser = serial.Serial(port, baud)
 
 print hallo
-print ser.readline()
+
 print ser.readline()              #arduino resets when connected. get rid of initial inputs sent
 
 ## now sync the time
 ## get localtime and make it unix time
 t = time.mktime((time.localtime()))
+## adds two hours for local time - South-Afrca
+t = t +(2*60*60)  
 ## add a T to it so the system undersands the command
 T = "T" + str(t)
 #write the command. THis is a T with 10 digits. The 10 digits is UNIX time, in second since the epoch..some
