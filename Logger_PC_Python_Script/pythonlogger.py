@@ -42,7 +42,12 @@ t = t +(2*60*60)
 ## add a T to it so the system undersands the command
 T = "T" + str(t)
 #write the command. THis is a T with 10 digits. The 10 digits is UNIX time, in second since the epoch..some
-ser.write(T);
+from time import sleep
+# lets just give evrything some time to settle 
+sleep(5)
+ser.write(T)
+sleep(1)
+hourpast = 55
 
 #serial comms with arduino start here
 print "INCOMING DATA STREAM FROM ARDUINO"
@@ -56,8 +61,23 @@ while 1:
     except:
       print "that file could not be opened - " + filename #smething went wrong
     
-    print val #send it to the screen aswell
+    print val[0:(len(val)-1)] #send it to the screen aswell
 
-
+    hourpast = hourpast + 1
+    if hourpast == 60:
+      hourpast = 0
+      ## now sync the time
+      ## get localtime and make it unix time
+      t = time.mktime((time.localtime()))
+      ## adds two hours for local time - South-Afrca
+      t = t +(2*60*60)  
+      ## add a T to it so the system undersands the command
+      T = "T" + str(t)
+      #write the command. THis is a T with 10 digits. The 10 digits is UNIX time, in second since the epoch..some
+      from time import sleep
+      # lets just give evrything some time to settle 
+      ser.write(T)
+      sleep(1)
+      
 # end
 

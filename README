@@ -30,4 +30,10 @@ Current probe - bias resistors 2x10kOhm and 10uF Capacitor. Burden Resistor - 56
 Current probe - more info at - http://openenergymonitor.org/emon/node/28
 ----------------------------------------------------------------------------------------------------------------------------
 RF 12 radio connected via SPI - all my notes here - https://github.com/Tooblippe/Energy_Logger/wiki
+
+Note on RF12 and soldering iron. I found that my soldering iron interfered with the RF12 radio...
+--must be that I have a cheap soldering iron, and the rectifier must be producing plenty noise.
+--when switched off in close proximity the circuit works fine...nothing the other way around.... 
+--my first experience with EMC! :)
+
 --------------

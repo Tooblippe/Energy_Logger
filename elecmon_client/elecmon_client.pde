@@ -56,6 +56,7 @@ uint8_t group = 30;
 byte ledPin = 9;
 byte inByte = 0;
 char serInString[30];  // array that will hold the different bytes  100=100characters;
+char dummyString[10];  // array that will hold the different bytes  100=100characters;
 char radioInString[50];  // array that will hold the different bytes  100=100characters;
                       // -> you must state how long the array will be else it won't work.
 int  serInIndx  = 0;    // index of serInString[] in which to insert the next incoming byte
@@ -84,7 +85,7 @@ void setup () {
     // start the LCD in 2 rows by 16 characters mode
     lcd.begin(16, 2);
      lcd.setCursor(0, 0);
-    lcd.print("waiting...");
+    lcd.print("connecting...");
     pinMode( ledPin, OUTPUT );
    
 }
@@ -115,9 +116,20 @@ void loop () {
         String instring = String(radioInString);
         // lets look for the reading value...there is a "." in the string somewhere
         if (instring.indexOf(".")>0){
+          
+         //lets analyse it
+         int lastcomma = instring.lastIndexOf(',');  //were is the last comma?
+         
          // found it so print it to the lcd
          lcd.setCursor(0, 0);
-         lcd.print(instring);
+         //lcd.print(instring);
+         byte j = 0;
+         for ( byte i = (lastcomma+1); i < (instring.length()-1); i++){   //print the value from the last comma onwards.
+           lcd.print(instring[i]);
+           dummyString[j++] = instring[i];
+         }
+         dummyString[j] = '\0';
+         String instring = String(dummyString);
          
          //now convert the string to a long
          char carray[instring.length() + 1]; //determine size of the array
@@ -154,7 +166,8 @@ void loop () {
      //if serial data was received and we can send, send the content of serInString
      if (needToSend && rf12_canSend()) {
             //yes we can sent
-            // put serinstring into the buffer           
+            // put serinstring into the buffer    
+           rf12_recvDone();      
             payload.print(serInString);
             //now send it to the other side
             rf12_sendStart(0, payload.buffer(), payload.length());
