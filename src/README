@@ -1,0 +1,17 @@
+/*
+  Arduino based RF12 enabled energy logger
+  Created by Tobie Nortje, tobie.nortje@navitas.co.za
+  http://navitas.co.za/tobienortje/
+  https://github.com/Tooblippe/Energy_Logger/wiki
+  GNU GPL
+
+  files
+  ----------------------------------------------------------------------------------------------------------
+  elecmon_sensor			arduino with current transformer firmware
+  elecmon_client			remote arduino software 
+  emon						open enegy monitor library to measure power
+  HardwareSerial			the standard arduino UART software, slightly modified. see readme
+  Logger_PC_Python_Script	simple script that takes serial comms from arduino client ans save it to a file
+  ----------------------------------------------------------------------------------------------------------
+  */
+
