@@ -61,8 +61,10 @@ char radioInString[50];  // array that will hold the different bytes  100=100cha
                       // -> you must state how long the array will be else it won't work.
 int  serInIndx  = 0;    // index of serInString[] in which to insert the next incoming byte
 int  radioIndx = 0;
-int  loadlimit = 2800;  //lets check for geyser
-
+int  loadlimit = 5000;  //lets check for geyser
+float average = 0.0;
+float nsamples = 0.0;
+float printave = 0.00;
 
 void blink(byte n ){
  pinMode( ledPin, OUTPUT );
@@ -136,6 +138,14 @@ void loop () {
          instring.toCharArray(carray, sizeof(carray)); //put readStringinto an array
          float invalue = atof( carray );
          
+         nsamples++;
+         if (average == 0 )
+         {
+           average = invalue/1000.0; }
+           else {
+              average = average + invalue/1000.0;
+           }
+         
          //lets print something to the lcd if a threshold have been met.
          if (invalue > loadlimit ){
            lcd.print(" ON  ");
@@ -144,7 +154,15 @@ void loop () {
              lcd.print( " OFF   ");
              digitalWrite( ledPin, LOW );
          }
-        
+          printave = average/nsamples;
+          
+          lcd.setCursor(0, 1);
+          lcd.print("A");
+          lcd.print(printave);
+          lcd.print("kW ");
+          lcd.print(printave*24);
+          lcd.print("kWh");
+          
         }
       }
      

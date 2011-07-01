@@ -87,7 +87,7 @@ void dbp( char* This ){
 void setup()
 {  
   emon.setPins(5,5);                                 //Energy monitor analog pins, fake the voltage pin to same as current this is important. We are not reading the voltage.
-  emon.calibration( 1, 0.171, 1);                    //Energy monitor calibration 0.171
+  emon.calibration( 1, 0.171, 1);                    //Energy monitor calibration 0.171, EnergyMonitor::calibration(double _VCAL, double _ICAL, double _PHASECAL)
   
   Serial.begin(4800);                      //we need to chat as slow as possible to OPENLOG and as fast as possible witht RF12 radio to get the data ou and avoid serial data loss
   Serial.flush();

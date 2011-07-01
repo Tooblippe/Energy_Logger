@@ -25,7 +25,7 @@ fmt1 = '%m/%d/%Y'
 fmt2 = '%H:%M:%S'
 
 #log to filename
-filename = "C:\\temp\\geyser.csv"
+filename = "C:\\temp\\wholehouse.csv"
 
 #setup serial comms
 ser = serial.Serial(port, baud)
@@ -48,6 +48,7 @@ sleep(5)
 ser.write(T)
 sleep(1)
 hourpast = 55
+average = 0
 
 #serial comms with arduino start here
 print "INCOMING DATA STREAM FROM ARDUINO"
@@ -63,8 +64,9 @@ while 1:
     
     print val[0:(len(val)-1)] #send it to the screen aswell
 
+    
     hourpast = hourpast + 1
-    if hourpast == 60:
+    if hourpast == 360:  ## update every 360 times 10 seconds = 3600 = 1 hour...set the time.
       hourpast = 0
       ## now sync the time
       ## get localtime and make it unix time
