@@ -19,12 +19,17 @@
 //#include <avr/wdt.h>
 #include <LiquidCrystal.h>
 #include <EEPROM.h>
+#include <NewSoftSerial.h>  //Include the NewSoftSerial library to send serial commands to the cellular module.
+#include <string.h>         //Used for string manipulations
 
 SdCard card;
 Fat16 file;
 
 //#define  RX8025_address  0x32
 #define DS1307_I2C_ADDRESS 0x68  // This is the I2C address
+#define supply_voltage 220
+#define mobilenumber "0832270729"
+
 
 unsigned char RX8025_Control[2]={0x20,0x00};
 unsigned char RX8025_time[7]=   {0x55,0x59,0x23,0x7,0x10,0x07,0x11}; //second, minute, hour, week, date, month, year, BCD format
@@ -40,6 +45,8 @@ LiquidCrystal lcd(9, 8, 7, 6, 5, 4);
 
 EnergyMonitor emon;  //Create an instance
 
+NewSoftSerial cell(2,3);  //Create a 'fake' serial port. Pin 2 is the Rx pin, pin 3 is the Tx pin.
+
 byte      debug = 1;        //print strings if 1
 byte      logging = 1;      //are we logging now 1=yes, 0=no
 boolean   start = true;
@@ -54,6 +61,8 @@ int       tmp102_val; /* an int is capable of storing two bytes, this is where w
 char      name[] = "werk4.csv";
 int       incomingbyte;
 int       logdelayaddr = 0;
+char      cell_incoming_char=0;      //Will hold the incoming character from the Serial Port.
+int      rings=0;
 
 //debug printing function. this thing logs to an openlog. everything sent to the serial port will be logged. this turns it off.
 void dbp( char* This ){if (debug) {Serial.println(This);}}
@@ -170,7 +179,28 @@ void setup()
   Serial.begin(115200);                                  //we need to chat as slow as possible to OPENLOG and as fast as possible witht RF12 radio to get the data ou and avoid serial data loss
   Wire.begin();
   
-   lcd.begin(16, 2); lcd.setCursor(0, 0); lcd.clear();
+  lcd.begin(16, 2); lcd.setCursor(0, 0); lcd.clear();
+  lcd.print("booting cellcomms");
+  
+  cell.begin(9600);
+  Serial.println("Booting cell");
+  delay(31000); // give time for GSM module to register on network etc.
+  cell.println("AT+CMGF=1"); // set SMS mode to text
+  delay(200);
+  if (cell.available() > 0){ while (cell.available() > 0) Serial.print( cell.read(),BYTE); }
+  
+  delay(500);
+  cell.println("AT+CNMI=3,3,0,0"); // set module to send SMS data to serial out upon receipt
+  delay(200);
+  if (cell.available() > 0){ while (cell.available() > 0) Serial.print( cell.read(),BYTE  ); }
+  delay(200);
+  cell.println("AT+CMGD=1,4"); // delete all SMS
+  delay(200);
+  if (cell.available() > 0){ while (cell.available() > 0) Serial.print( cell.read(),BYTE  ); }
+  //Let's get started!
+  Serial.println("SM5100B Communication should be ready...");
+  
+  lcd.begin(16, 2); lcd.setCursor(0, 0); lcd.clear(); 
  
    Serial.println("-");
     
@@ -272,19 +302,10 @@ if (millis()-runningtime > updatetime){
        file.open(name, O_CREAT | O_APPEND | O_WRITE);
        createLoggingString() ;
        file.close();     
-     }   
-       if ( Serial.available() > 0 ){ 
-       incomingbyte = Serial.read();
-       Serial.println( incomingbyte );
-       if (incomingbyte == 84) {   //T second minute hour day date month year  
-         setDateDs1307();
-       }
-       
-       if (incomingbyte == 85) printfile();  //u
-       
-       if (incomingbyte == 86) setlogdelay();  //v
-       
-       if (incomingbyte == 87) eepromdump();  //W
+      
+      
+        checkserial();
+        checkcell();
      }    
      
     
@@ -301,9 +322,11 @@ if (millis()-runningtime > updatetime){
       if( second <10) lcd.print("0");
       lcd.print(second,DEC);
       
-      
-     
+     checkserial(); 
+     checkcell();
   }
+  checkcell();
+  checkserial();
 }      
  
 int availableMemory() {
@@ -430,4 +453,75 @@ void eepromdump(){
     Serial.print( EEPROM.read( i ),DEC); 
     Serial.print("--");}
     Serial.println();
+}
+
+void checkcell(){
+  if (cell.available() >0)
+  {
+    cell_incoming_char=cell.read();    //Get the character from the cellular serial port.
+    Serial.print(cell_incoming_char);  //Print the incoming character to the terminal.
+    
+    if (cell_incoming_char == '#'){
+      //delay(50);
+        Serial.println("I got an SMS bite china!");
+        
+        cell.println("AT+CMGD=1,4"); // delete all SMS
+        delay(200);
+        Serial.println("deleted it");
+        //delay(100);
+      }
+     
+     if (cell_incoming_char == 'R')
+     if (cell.read() == 'I')
+     if (cell.read() == 'N')
+     if (cell.read() == 'G'){
+        Serial.print("I am ringing my dude--");
+        rings++;
+        Serial.println( rings );  
+        if (rings == 3 ){
+          startSMS(); 
+          cell.print( "Power Now---> " );
+          cell.print(emon.apparentPower);
+          endSMS();
+        
+        rings = 0;
+        Serial.println( "reset" );
+        }
+    }
+    //delay(20);
+ }
+}
+
+void checkserial(){
+   if ( Serial.available() > 0 ){ 
+       incomingbyte = Serial.read();
+       Serial.println( incomingbyte );
+       if (incomingbyte == 84) {   //T second minute hour day date month year  
+         setDateDs1307();
+       }
+       
+       if (incomingbyte == 85) printfile();  //u
+       
+       if (incomingbyte == 86) setlogdelay();  //v
+       
+       if (incomingbyte == 87) eepromdump();  //W
+   }
+}
+
+void startSMS()
+// function to send a text message
+{
+
+cell.println("AT+CMGF=1"); // set SMS mode to text
+cell.print("AT+CMGS=");
+cell.print(34,BYTE); // ASCII equivalent of "
+cell.print(mobilenumber);
+cell.println(34,BYTE);  // ASCII equivalent of "
+delay(500); // give the module some thinking time
+}
+void endSMS()
+{
+cell.println(26,BYTE);  // ASCII equivalent of Ctrl-Z
+delay(15000); // the SMS module needs time to return to OK status
+
 }
