@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Energy logger by Tooblippe</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Energy logger</h1>
+        <p>This is my attempt to build a small home based energy logger. It is not unique but has an RF12 on board so it can integrate with other systems, and it logs data to a OpenLog unit. This makes changing SD cards and logging a breeze It is based on OpenEnergyMonitor Many of these projects have been done all around the world. I think what makes this one unique is the fact that the sensor unit (the arduino with the CT) has a RF12 radio built in and also an Openlog unit from Sparkfun. The OpenLog unit is connected to the UART of the sensor unit. Full control off the Openlog can be obtained via the remote unit connected via RF12 radio.This means that the sensor unit can keep on logging to the Openlog. You can remotely initiate a session with the Openlog from the base station, and make changes to the settings, before putting it back in logging mode.</p>
+
+        <p class="view"><a href="https://github.com/Tooblippe/Energy_Logger">View the Project on GitHub <small>Tooblippe/Energy_Logger</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/Tooblippe/Energy_Logger/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/Tooblippe/Energy_Logger/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/Tooblippe/Energy_Logger">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>/*
+  Arduino based RF12 enabled energy logger
+  Created by Tobie Nortje, <a href="mailto:tobie.nortje@navitas.co.za">tobie.nortje@navitas.co.za</a>
+  <a href="http://navitas.co.za/tobienortje/">http://navitas.co.za/tobienortje/</a>
+  <a href="https://github.com/Tooblippe/Energy_Logger/wiki">https://github.com/Tooblippe/Energy_Logger/wiki</a>
+  GNU GPL
+*/</p>
+
+<hr><p>Project components
+1 or 2 arduinos with or without an RF 12 radio
+1 x OpenLog unit connected to UART of sensor - for logging data - <a href="https://github.com/nseidle/OpenLog/wiki">https://github.com/nseidle/OpenLog/wiki</a>
+1 x 100 AMP CT
+1st arduino with CT logs energy and send via RF12 radio and serial
+2nd arduino receives RF12 signal and send value via serial port</p>
+
+<h2>
+<a name="this-software-can-read-eiter-or-both-if-ran-on-seperate-computers-or-ports" class="anchor" href="#this-software-can-read-eiter-or-both-if-ran-on-seperate-computers-or-ports"><span class="octicon octicon-link"></span></a>This software can read eiter, or both if ran on seperate computers or ports</h2>
+
+<p>Function
+Listens to serial port at port number = port at baud = baud
+Arduino only sents one value every couple of seconds.
+This code should be able to read the sensor board and the client board.</p>
+
+<h2>
+<a name="do-with-the-code-what-you-want-n" class="anchor" href="#do-with-the-code-what-you-want-n"><span class="octicon octicon-link"></span></a>Do with the code what you want. \n</h2>
+
+<h2>
+<a name="file-format--logs-to-csv-in-date-time-power" class="anchor" href="#file-format--logs-to-csv-in-date-time-power"><span class="octicon octicon-link"></span></a>File format : logs to csv in DATE, TIME, POWER</h2>
+
+<p>Arduino UNO - connected current probe and RF12 Radio
+Current probe - 100A, SCT-013-00, order from NETRAM - <a href="http://www.netram.co.za/Sensors/Non-invasive-AC-current-sensor-100A.html">http://www.netram.co.za/Sensors/Non-invasive-AC-current-sensor-100A.html</a>
+Current probe - <a href="http://www.seeedstudio.com/depot/noninvasive-ac-current-sensor-100a-max-p-547.html">http://www.seeedstudio.com/depot/noninvasive-ac-current-sensor-100a-max-p-547.html</a>
+Current probe - bias resistors 2x10kOhm and 10uF Capacitor. Burden Resistor - 56 OHMS (used 6 330 OHM in parralel )</p>
+
+<h2>
+<a name="current-probe---more-info-at---httpopenenergymonitororgemonnode28" class="anchor" href="#current-probe---more-info-at---httpopenenergymonitororgemonnode28"><span class="octicon octicon-link"></span></a>Current probe - more info at - <a href="http://openenergymonitor.org/emon/node/28">http://openenergymonitor.org/emon/node/28</a>
+</h2>
+
+<p>RF 12 radio connected via SPI - all my notes here - <a href="https://github.com/Tooblippe/Energy_Logger/wiki">https://github.com/Tooblippe/Energy_Logger/wiki</a></p>
+
+<p>Note on RF12 and soldering iron. I found that my soldering iron interfered with the RF12 radio...
+--must be that I have a cheap soldering iron, and the rectifier must be producing plenty noise.
+--when switched off in close proximity the circuit works fine...nothing the other way around.... 
+--my first experience with EMC! :)</p>
+
+<hr>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/Tooblippe">Tooblippe</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
